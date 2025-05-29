@@ -1,0 +1,6 @@
+torch
+transformers
+torchvision
+pandas
+pillow
+pytesseract
