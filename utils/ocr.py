@@ -9,12 +9,12 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tessera
 
 # Emoji pattern to detect any emoji-like characters
 EMOJI_REGEX = re.compile(
-    "[\U0001F600-\U0001F64F"  # emoticons
-    "\U0001F300-\U0001F5FF"  # symbols & pictographs
-    "\U0001F680-\U0001F6FF"  # transport & map symbols
-    "\U0001F1E0-\U0001F1FF"  # flags (iOS)
-    "\U00002700-\U000027BF"  # Dingbats
-    "\U000024C2-\U0001F251"  # Enclosed characters
+    "[\U0001F600-\U0001F64F"
+    "\U0001F300-\U0001F5FF"
+    "\U0001F680-\U0001F6FF"
+    "\U0001F1E0-\U0001F1FF"
+    "\U00002700-\U000027BF"
+    "\U000024C2-\U0001F251" 
     "]+", flags=re.UNICODE
 )
 
@@ -53,7 +53,6 @@ def ocr_multi_lingual(image_path, tesseract_language='eng', gemini_api_key=None,
         text = extract_text_from_image_tesseract(image_path, tesseract_language)
         if text:
             print("Tesseract result:", text)
-            # If poor quality or contains emoji trigger Gemini fallback
             if len(text) < 10 or contains_emoji(text) or "unreadable" in text.lower():
                 print("Detected emoji or poor Tesseract result. Trying Gemini...")
                 text = None
@@ -75,11 +74,13 @@ def ocr_multi_lingual(image_path, tesseract_language='eng', gemini_api_key=None,
 
 if __name__ == '__main__':
     image_path = "MEME_0327.png"
-    api_key = os.getenv('GOOGLE_API_KEY', 'AIzaSyAHBYZGkBWwBaSCt4rXyvDA3sQfjSwJGro')  # Default for now
+    api_key = os.getenv('GOOGLE_API_KEY', 'AIzaSyAHBYZGkBWwBaSCt4rXyvDA3sQfjSwJGro') 
+    tesseract_language = 'eng+hin+spa+fra'
+    
     if api_key:
         extracted_text = ocr_multi_lingual(
             image_path,
-            tesseract_language='eng+spa',
+            tesseract_language=tesseract_language,
             gemini_api_key=api_key,
             gemini_prompt="Extract all visible text from this image, and include emojis exactly as seen."
         )
