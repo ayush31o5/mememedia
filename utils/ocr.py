@@ -71,7 +71,7 @@ def ocr_multi_lingual(image_path, tesseract_language='eng', gemini_api_key=None,
         return None
 
 if __name__ == '__main__':
-    image_path = "MEME_0327.png"
+    image_path = "test.png"
     api_key = os.getenv('GOOGLE_API_KEY', 'AIzaSyAHBYZGkBWwBaSCt4rXyvDA3sQfjSwJGro') 
     tesseract_language = 'eng+hin+spa+fra'
     
