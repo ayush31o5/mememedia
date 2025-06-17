@@ -2,9 +2,24 @@ import pytesseract
 from PIL import Image
 import google.generativeai as genai
 import os
+import re
 
 # Ensure the correct Tesseract path is set
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+# Emoji pattern to detect any emoji-like characters
+EMOJI_REGEX = re.compile(
+    "[\U0001F600-\U0001F64F"  # emoticons
+    "\U0001F300-\U0001F5FF"  # symbols & pictographs
+    "\U0001F680-\U0001F6FF"  # transport & map symbols
+    "\U0001F1E0-\U0001F1FF"  # flags (iOS)
+    "\U00002700-\U000027BF"  # Dingbats
+    "\U000024C2-\U0001F251"  # Enclosed characters
+    "]+", flags=re.UNICODE
+)
+
+def contains_emoji(text):
+    return bool(EMOJI_REGEX.search(text))
 
 def extract_text_from_image_tesseract(image_path, language='eng'):
     try:
@@ -15,11 +30,11 @@ def extract_text_from_image_tesseract(image_path, language='eng'):
         print(f"Error during Tesseract OCR: {e}")
         return None
 
-def extract_text_from_image_gemini(image_path, api_key=None, model_name="gemini-1.5-flash", prompt="What is written in this image?"):
+def extract_text_from_image_gemini(image_path, api_key=None, model_name="gemini-1.5-flash", prompt="Extract the text from this image, including any emojis."):
     if api_key is None:
-        api_key = os.getenv('GOOGLE_API_KEY', 'AIzaSyAHBYZGkBWwBaSCt4rXyvDA3sQfjSwJGro')
-        if api_key is None:
-            raise ValueError("Google Gemini API key not provided and GOOGLE_API_KEY environment variable not set.")
+        api_key = os.getenv('GOOGLE_API_KEY')
+        if not api_key:
+            raise ValueError("Google Gemini API key not provided and GOOGLE_API_KEY not set.")
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel(model_name)
     try:
@@ -28,38 +43,48 @@ def extract_text_from_image_gemini(image_path, api_key=None, model_name="gemini-
         response.resolve()
         return response.text.strip()
     except Exception as e:
-        print(f"Error during Gemini Pro Vision OCR: {e}")
+        print(f"Error during Gemini OCR: {e}")
         return None
 
-def ocr_multi_lingual(image_path, tesseract_language='eng', gemini_api_key=None, gemini_prompt="What is written in this image?", use_tesseract_first=True):
+def ocr_multi_lingual(image_path, tesseract_language='eng', gemini_api_key=None, gemini_prompt=None, use_tesseract_first=True):
     text = None
+
     if use_tesseract_first:
         text = extract_text_from_image_tesseract(image_path, tesseract_language)
         if text:
             print("Tesseract result:", text)
-            if len(text) < 10 or "unreadable" in text.lower():
-                print("Tesseract's result is poor, trying Gemini.")
+            # If poor quality or contains emoji trigger Gemini fallback
+            if len(text) < 10 or contains_emoji(text) or "unreadable" in text.lower():
+                print("Detected emoji or poor Tesseract result. Trying Gemini...")
                 text = None
             else:
                 return text
-    if text is None:
-        print("Falling back to Google Gemini Pro Vision OCR...")
-        text = extract_text_from_image_gemini(image_path, api_key=gemini_api_key, prompt=gemini_prompt)
-        if text:
-            print("Gemini result:", text)
-            return text
-        else:
-            print("Gemini also failed to extract text.")
-            return None
-    return text
+
+    print("Falling back to Google Gemini OCR...")
+    text = extract_text_from_image_gemini(
+        image_path,
+        api_key=gemini_api_key,
+        prompt=gemini_prompt or "Extract the text from this image, including any emojis."
+    )
+    if text:
+        print("Gemini result:", text)
+        return text
+    else:
+        print("Gemini also failed to extract text.")
+        return None
 
 if __name__ == '__main__':
-    image_path = "test.png"
-    api_key = os.getenv('GOOGLE_API_KEY', 'AIzaSyAHBYZGkBWwBaSCt4rXyvDA3sQfjSwJGro')  # Use environment variable
+    image_path = "MEME_0327.png"
+    api_key = os.getenv('GOOGLE_API_KEY', 'AIzaSyAHBYZGkBWwBaSCt4rXyvDA3sQfjSwJGro')  # Default for now
     if api_key:
-        extracted_text = ocr_multi_lingual(image_path, tesseract_language='eng+spa', gemini_api_key=api_key, gemini_prompt="Extract the text from this image.  Return only the text.", use_tesseract_first=True)
+        extracted_text = ocr_multi_lingual(
+            image_path,
+            tesseract_language='eng+spa',
+            gemini_api_key=api_key,
+            gemini_prompt="Extract all visible text from this image, and include emojis exactly as seen."
+        )
         if extracted_text:
-            print("Extracted Text:\n", extracted_text)
+            print("\nFinal Extracted Text:\n", extracted_text)
         else:
             print("OCR failed to extract text.")
     else:
