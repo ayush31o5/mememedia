@@ -4,10 +4,8 @@ import google.generativeai as genai
 import os
 import re
 
-# Ensure the correct Tesseract path is set
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
-# Emoji pattern to detect any emoji-like characters
 EMOJI_REGEX = re.compile(
     "[\U0001F600-\U0001F64F"
     "\U0001F300-\U0001F5FF"
