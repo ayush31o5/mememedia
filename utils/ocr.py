@@ -55,16 +55,6 @@ def ocr_multi_lingual(image_path, tesseract_language='eng', gemini_api_key=None,
 
 if __name__ == '__main__':
     image_path = "test.png"
-    if not os.path.exists(image_path):
-        from PIL import Image, ImageDraw, ImageFont
-        img = Image.new('RGB', (400, 100), color = 'white')
-        d = ImageDraw.Draw(img)
-        try:
-            font = ImageFont.truetype("arial.ttf", 30)
-        except OSError:
-            font = ImageFont.load_default()
-        d.text((10,10), "Hello World en Español", fill='black', font=font)
-        img.save(image_path)
     api_key = os.getenv('GOOGLE_API_KEY', 'AIzaSyAHBYZGkBWwBaSCt4rXyvDA3sQfjSwJGro')  # Use environment variable
     if api_key:
         extracted_text = ocr_multi_lingual(image_path, tesseract_language='eng+spa', gemini_api_key=api_key, gemini_prompt="Extract the text from this image.  Return only the text.", use_tesseract_first=True)
