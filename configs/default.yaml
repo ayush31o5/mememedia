@@ -1,0 +1,22 @@
+data:
+  raw_dir: "data/raw"
+  labels_excel: "data/labels.xlsx"
+
+model:
+  max_ocr_len: 50           # maximum OCR token length
+  transformer_dim: 256      # embedding dimension for both image and text
+
+training:
+  batch_size: 16
+  lr: 1e-4
+  epochs: 10
+
+evaluation:
+  batch_size: 16
+  ckpt_path: "checkpoints/epoch10.pth"  # path to the model checkpoint for evaluation
+
+predict:
+  ckpt_path: "checkpoints/epoch10.pth"  # default checkpoint for inference
+
+device: "cuda"           # or "cpu"
+output_dir: "checkpoints"  # folder to save training checkpoints

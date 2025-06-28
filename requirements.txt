@@ -1,6 +1,7 @@
 torch
-transformers
 torchvision
 pandas
 pillow
+PyYAML
+google-generativeai
 pytesseract

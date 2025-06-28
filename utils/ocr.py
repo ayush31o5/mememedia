@@ -69,22 +69,3 @@ def ocr_multi_lingual(image_path, tesseract_language='eng', gemini_api_key=None,
     else:
         print("Gemini also failed to extract text.")
         return None
-
-if __name__ == '__main__':
-    image_path = "test.png"
-    api_key = os.getenv('GOOGLE_API_KEY', 'AIzaSyAHBYZGkBWwBaSCt4rXyvDA3sQfjSwJGro') 
-    tesseract_language = 'eng+hin+spa+fra'
-    
-    if api_key:
-        extracted_text = ocr_multi_lingual(
-            image_path,
-            tesseract_language=tesseract_language,
-            gemini_api_key=api_key,
-            gemini_prompt="Extract all visible text from this image, and include emojis exactly as seen."
-        )
-        if extracted_text:
-            print("\nFinal Extracted Text:\n", extracted_text)
-        else:
-            print("OCR failed to extract text.")
-    else:
-        print("Please set the GOOGLE_API_KEY environment variable or provide the API key directly.")
