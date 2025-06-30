@@ -1,0 +1,23 @@
+# Virtual environment directory
+multimeme/
+
+# Data folder
+data/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Environment variables
+.env
+.venv
+
+# IDE/editor settings
+.vscode/
+.idea/

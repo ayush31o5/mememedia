@@ -30,7 +30,7 @@ def extract_text_from_image_tesseract(image_path, language='eng'):
 
 def extract_text_from_image_gemini(image_path, api_key=None, model_name="gemini-1.5-flash", prompt="Extract the text from this image, including any emojis."):
     if api_key is None:
-        api_key = os.getenv('GOOGLE_API_KEY')
+        api_key = 'AIzaSyAHBYZGkBWwBaSCt4rXyvDA3sQfjSwJGro'
         if not api_key:
             raise ValueError("Google Gemini API key not provided and GOOGLE_API_KEY not set.")
     genai.configure(api_key=api_key)

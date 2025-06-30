@@ -18,5 +18,5 @@ evaluation:
 predict:
   ckpt_path: "checkpoints/epoch10.pth"  # default checkpoint for inference
 
-device: "cuda"           # or "cpu"
+device: "cpu"           # or "cpu"
 output_dir: "checkpoints"  # folder to save training checkpoints
