@@ -1,0 +1,64 @@
+# configs/enhanced_config.yaml
+
+# Device and training settings
+device: 'cuda'
+random_state: 42
+experiment_name: 'multimodal_v1'
+
+# Data configuration
+data:
+  raw_dir: 'data/img'
+  labels_excel: 'data/labels.xlsx'
+  
+# Model configuration  
+model:
+  unified_dim: 768
+  max_length: 128
+  image_size: 336
+  
+# Training configuration
+training:
+  epochs: 20
+  batch_size: 16
+  val_batch_size: 32
+  lr: 5e-5
+  clip_lr: 1e-5  # Lower LR for pretrained CLIP
+  bert_lr: 2e-5  # Lower LR for pretrained BERT
+  weight_decay: 0.01
+  grad_clip_norm: 1.0
+  use_mixed_precision: true
+  
+# Cross-validation settings
+n_folds: 5
+stratify_col: 'Audience Perception'
+
+# Advanced training techniques
+use_ema: true
+ema_decay: 0.9999
+use_tta: true
+patience: 7
+
+# Loss weights (higher weight = more important)
+loss_weights:
+  brands: 1.0
+  context: 1.0  
+  technical: 1.0
+  sentiment: 2.0
+  humor: 2.5
+  sarcasm: 2.5
+  human_perception: 3.0  # Most important for final evaluation
+
+# Logging and checkpointing
+output_dir: 'checkpoints/model'
+log_interval: 50
+use_wandb: false  # Set to true for experiment tracking
+wandb_project: 'meme-classification'
+
+# Data loading
+num_workers: 4
+
+# Inference settings
+inference:
+  ensemble_method: 'weighted_average'  # 'simple_average', 'weighted_average', 'voting'
+  tta_enabled: true
+  confidence_threshold: 0.5
