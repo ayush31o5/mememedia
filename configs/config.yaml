@@ -30,7 +30,7 @@ training:
   
 # Cross-validation settings
 n_folds: 5
-stratify_col: 'Audience Perception'
+stratify_col: 'Human Perception'
 
 # Advanced training techniques
 use_ema: true
