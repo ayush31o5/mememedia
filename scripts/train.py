@@ -150,7 +150,3 @@ if __name__ == '__main__':
     cfg = yaml.safe_load(open('configs/default.yaml'))
     os.makedirs(cfg['output_dir'], exist_ok=True)
     main(cfg)
-
-
-
-#try k fold instead of 80 20 for data
