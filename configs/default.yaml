@@ -1,22 +1,23 @@
+output_dir: checkpoints
+
 data:
-  raw_dir: "data/raw"
-  labels_excel: "data/labels.xlsx"
+  raw_dir: data/raw
+  labels_excel: data/labels.xlsx
 
 model:
-  max_ocr_len: 50           # maximum OCR token length
-  transformer_dim: 256      # embedding dimension for both image and text
+  max_ocr_len: 64
+  max_hp_len: 64
+  transformer_dim: 256
+  n_heads: 4
+  n_layers: 2
+  decoder_layers: 2
+  dropout: 0.1
+  pretrained_cnn: true
 
 training:
-  batch_size: 16
-  lr: 1e-4
   epochs: 10
-
-evaluation:
-  batch_size: 32
-  ckpt_path: "checkpoints/epoch10.pth"  # path to the model checkpoint for evaluation
-
-predict:
-  ckpt_path: "checkpoints/epoch10.pth"  # default checkpoint for inference
-
-device: "cpu"           # or "cpu"
-output_dir: "checkpoints"  # folder to save training checkpoints
+  batch_size: 8
+  lr: 0.001
+  val_ratio: 0.1
+  amp: false
+  hp_loss_weight: 1.0
